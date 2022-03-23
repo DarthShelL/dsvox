@@ -22,7 +22,7 @@ int main() {
 
     // Shader
     // -----
-    Shader* shader = load_shader("simple.vsh", "simple.fsh");
+    Shader* shader = load_shader("resources/shaders/simple.vsh", "resources/shaders/simple.fsh");
     if (shader == nullptr){
         std::cerr << "ERROR::MAIN:Shader loading failed" << std::endl;
         Window::Terminate();

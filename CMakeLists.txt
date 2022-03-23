@@ -31,13 +31,13 @@ target_link_libraries(${PROJECT_NAME} glfw)
 find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} OpenGL::GL)
 
-if (APPLE)
-    set(RESOURCE_FILES
-        resources/shaders/simple.vsh
-        resources/shaders/simple.fsh)
+FILE(GLOB_RECURSE RESOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/*")
 
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        MACOSX_BUNDLE TRUE
-        MACOSX_FRAMEWORK_IDENTIFIER org.cmake.ExecutableTarget
-        RESOURCE "${RESOURCE_FILES}")
-endif()
+foreach(RES IN LISTS RESOURCE_FILES)
+    get_filename_component(F_NAME ${RES} NAME)
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy "${RES}" "${CMAKE_BINARY_DIR}/resources/shaders/${F_NAME}"
+        COMMENT "Copying ${F_NAME} to build directory"
+    )
+endforeach()

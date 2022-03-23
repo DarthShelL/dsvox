@@ -23,6 +23,9 @@ add_executable(${PROJECT_NAME}
         sources/graphics/Shader.cpp
         sources/graphics/Shader.h)
 
+add_subdirectory(glm)
+target_link_libraries(${PROJECT_NAME} glm)
+
 add_subdirectory(glad/)
 target_link_libraries(${PROJECT_NAME} glad)
 

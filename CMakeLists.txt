@@ -10,17 +10,18 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 include_directories(glad/include)
+include_directories(sources)
 
 add_executable(${PROJECT_NAME}
         main.cpp
-        window/Window.cpp
-        window/Window.h
-        window/Events.cpp
-        window/Events.h
-        graphics/Mesh.cpp
-        graphics/Mesh.h
-        graphics/Shader.cpp
-        graphics/Shader.h)
+        sources/window/Window.cpp
+        sources/window/Window.h
+        sources/window/Events.cpp
+        sources/window/Events.h
+        sources/graphics/Mesh.cpp
+        sources/graphics/Mesh.h
+        sources/graphics/Shader.cpp
+        sources/graphics/Shader.h)
 
 add_subdirectory(glad/)
 target_link_libraries(${PROJECT_NAME} glad)

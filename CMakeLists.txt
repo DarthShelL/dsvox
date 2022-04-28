@@ -50,3 +50,14 @@ foreach(RES IN LISTS RESOURCE_FILES)
         COMMENT "Copying ${F_NAME} to build directory"
     )
 endforeach()
+# Get list of texture files
+set(SUB_DIR "resources/textures")
+FILE(GLOB_RECURSE RESOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${SUB_DIR}/*")
+foreach(RES IN LISTS RESOURCE_FILES)
+    get_filename_component(F_NAME ${RES} NAME)
+    add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "${RES}" "${CMAKE_BINARY_DIR}/${SUB_DIR}/${F_NAME}"
+            COMMENT "Copying ${F_NAME} to build directory"
+    )
+endforeach()

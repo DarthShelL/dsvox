@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_CXX_STANDARD 11)
 set(PROJECT_NAME dsvox)
@@ -11,6 +11,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 include_directories(glad/include)
 include_directories(sources)
+include_directories(libpng-1.6.37)
 
 add_executable(${PROJECT_NAME}
         main.cpp
@@ -21,7 +22,10 @@ add_executable(${PROJECT_NAME}
         sources/graphics/Mesh.cpp
         sources/graphics/Mesh.h
         sources/graphics/Shader.cpp
-        sources/graphics/Shader.h)
+        sources/graphics/Shader.h sources/loaders/TextureLoader.cpp sources/loaders/TextureLoader.h sources/graphics/Texture.cpp sources/graphics/Texture.h)
+
+add_subdirectory(libpng-1.6.37)
+target_link_libraries(${PROJECT_NAME} png_static)
 
 add_subdirectory(glm)
 target_link_libraries(${PROJECT_NAME} glm)
@@ -44,5 +48,16 @@ foreach(RES IN LISTS RESOURCE_FILES)
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy "${RES}" "${CMAKE_BINARY_DIR}/${SUB_DIR}/${F_NAME}"
         COMMENT "Copying ${F_NAME} to build directory"
+    )
+endforeach()
+# Get list of texture files
+set(SUB_DIR "resources/textures")
+FILE(GLOB_RECURSE RESOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${SUB_DIR}/*")
+foreach(RES IN LISTS RESOURCE_FILES)
+    get_filename_component(F_NAME ${RES} NAME)
+    add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "${RES}" "${CMAKE_BINARY_DIR}/${SUB_DIR}/${F_NAME}"
+            COMMENT "Copying ${F_NAME} to build directory"
     )
 endforeach()

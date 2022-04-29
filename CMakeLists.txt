@@ -22,7 +22,13 @@ add_executable(${PROJECT_NAME}
         sources/graphics/Mesh.cpp
         sources/graphics/Mesh.h
         sources/graphics/Shader.cpp
-        sources/graphics/Shader.h sources/loaders/TextureLoader.cpp sources/loaders/TextureLoader.h sources/graphics/Texture.cpp sources/graphics/Texture.h)
+        sources/graphics/Shader.h
+        sources/loaders/TextureLoader.cpp
+        sources/loaders/TextureLoader.h
+        sources/graphics/Texture.cpp
+        sources/graphics/Texture.h
+        sources/graphics/Camera.cpp
+        sources/graphics/Camera.h)
 
 add_subdirectory(libpng-1.6.37)
 target_link_libraries(${PROJECT_NAME} png_static)

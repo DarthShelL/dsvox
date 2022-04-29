@@ -101,10 +101,11 @@ GLuint _load_png(const char *file, int *width, int *height) {
             alpha = GL_RGB;
             break;
         default:
-            printf("Color type %d not supported!\n", png_get_color_type(png_ptr, info_ptr));
+            std::cerr << "ERROR::TEXTURELOADER::PNG::Color type " << png_get_color_type(png_ptr, info_ptr) << " not supported" << std::endl;
             png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
             return 0;
     }
+
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

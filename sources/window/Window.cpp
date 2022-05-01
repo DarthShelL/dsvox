@@ -50,6 +50,9 @@ int Window::Initialize(int width, int height, const char* title) {
         return -1;
     }
 
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+
     SetClearColor(0.1f, 0.18f, 0.2, 1);
 
     return 0;
@@ -73,9 +76,14 @@ void Window::SwapBuffers(){
 }
 
 void Window::Clear() {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::SetClearColor(float r, float g, float b, float a) {
     glClearColor(r, g, b, a);
+}
+
+void Window::ProcessInput() {
+    if (Events::JustPressed(GLFW_KEY_ESCAPE))
+        Window::SetWindowShouldClose(true);
 }

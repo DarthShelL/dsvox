@@ -6,6 +6,7 @@
 #define WINDOW_WINDOW_H
 
 #include <iostream>
+#include "window/Events.h"
 
 class GLFWwindow;
 
@@ -19,6 +20,7 @@ public:
     static void SwapBuffers();
     static void Clear();
     static void SetClearColor(float r, float g, float b, float a);
+    static void ProcessInput();
 };
 
 

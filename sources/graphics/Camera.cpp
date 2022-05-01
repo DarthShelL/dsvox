@@ -4,6 +4,26 @@
 
 #include "Camera.h"
 
+// constructor with vector values
+Camera::Camera(glm::vec3 position, glm::vec3 up,
+               float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED),
+                                         MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+    Position = position;
+    WorldUp = up;
+    Yaw = yaw;
+    Pitch = pitch;
+    updateCameraVectors();
+}
+
+// constructor with scalar values
+Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(
+        glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+    Position = glm::vec3(posX, posY, posZ);
+    WorldUp = glm::vec3(upX, upY, upZ);
+    Yaw = yaw;
+    Pitch = pitch;
+    updateCameraVectors();
+}
 
 // returns the view matrix calculated using Euler Angles and the LookAt Matrix
 glm::mat4 Camera::GetViewMatrix() {
@@ -29,7 +49,7 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
     yoffset *= MouseSensitivity;
 
     Yaw += xoffset;
-    Pitch += yoffset;
+    Pitch += -yoffset;
 
     // make sure that when pitch is out of bounds, screen doesn't get flipped
     if (constrainPitch) {
@@ -64,4 +84,18 @@ void Camera::updateCameraVectors() {
     Right = glm::normalize(glm::cross(Front,
                                       WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
     Up = glm::normalize(glm::cross(Right, Front));
+}
+
+void Camera::ProcessInput(float deltaTime) {
+    if (Events::Pressed(GLFW_KEY_W))
+        ProcessKeyboard(FORWARD, deltaTime);
+    if (Events::Pressed(GLFW_KEY_S))
+        ProcessKeyboard(BACKWARD, deltaTime);
+    if (Events::Pressed(GLFW_KEY_A))
+        ProcessKeyboard(LEFT, deltaTime);
+    if (Events::Pressed(GLFW_KEY_D))
+        ProcessKeyboard(RIGHT, deltaTime);
+
+    if (Events::Clicked(GLFW_MOUSE_BUTTON_2))
+        ProcessMouseMovement(Events::deltaX, Events::deltaY);
 }

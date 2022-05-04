@@ -21,6 +21,7 @@ public:
     void SetInt(const std::string &name, int value) const;
     void SetFloat(const std::string &name, float value) const;
     void SetVec3f(const std::string &name, glm::vec3 &value);
+    void SetMat3f(const std::string &name, glm::mat3 &value);
     void SetMat4f(const std::string &name, glm::mat4 &value);
 
     Shader(uint id);

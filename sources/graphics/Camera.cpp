@@ -41,6 +41,10 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
         Position -= Right * velocity;
     if (direction == RIGHT)
         Position += Right * velocity;
+    if (direction == UP)
+        Position += Up * velocity;
+    if (direction == DOWN)
+        Position -= Up * velocity;
 }
 
 // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
@@ -95,6 +99,10 @@ void Camera::ProcessInput(float deltaTime) {
         ProcessKeyboard(LEFT, deltaTime);
     if (Events::Pressed(GLFW_KEY_D))
         ProcessKeyboard(RIGHT, deltaTime);
+    if (Events::Pressed(GLFW_KEY_SPACE))
+        ProcessKeyboard(UP, deltaTime);
+    if (Events::Pressed(GLFW_KEY_LEFT_SHIFT))
+        ProcessKeyboard(DOWN, deltaTime);
 
     if (Events::Clicked(GLFW_MOUSE_BUTTON_2))
         ProcessMouseMovement(Events::deltaX, Events::deltaY);

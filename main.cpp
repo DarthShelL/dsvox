@@ -7,15 +7,24 @@
 #include "graphics/Shader.h"
 #include "graphics/Texture.h"
 #include "graphics/Camera.h"
+#include "loaders/OBJLoader.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 
+#define DEBUG 1
+
+#ifdef DEBUG
+#define LOG(x) std::cout << "LOG: ----- \n" << x << std::endl
+#else
+#define LOG(x)
+#endif
+
 typedef unsigned int uint;
 // settings
-const uint SCR_WIDTH = 800;
-const uint SCR_HEIGHT = 600;
+const uint SCR_WIDTH = 1024;
+const uint SCR_HEIGHT = 768;
 
 
 int main() {
@@ -43,50 +52,12 @@ int main() {
         return -1;
     }
 
-    // CUBE
-    float vertices[] = {
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    //Monkey
+    std::vector<float> vertices, normals;
+    std::vector<GLushort> elements;
 
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    OBJLoader::Load("resources/models/monkey_ex.obj", vertices, normals, elements);
 
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-            0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-    };
     // world space positions of our cubes
     glm::vec3 cubePositions[] = {
             glm::vec3(0.0f, 0.0f, 0.0f),
@@ -101,32 +72,49 @@ int main() {
             glm::vec3(-1.3f, 1.0f, -1.5f)
     };
 
-    uint vbo, vao, lightVao; // ebo;
+    uint vbo, vao, lightVao, ebo;
 
-    // Cube
+    // Cube ----------
     glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-
     glBindVertexArray(vao);
 
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(float), &vertices[0], GL_STATIC_DRAW);
+    // element buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size()*sizeof(GLushort), &elements[0], GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
+
     // normal attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // light
+    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
+    // light --------
     glGenVertexArrays(1, &lightVao);
     glBindVertexArray(lightVao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
     // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
     // -----
 
@@ -169,9 +157,10 @@ int main() {
         // render boxes
         glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
         glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-        colorShader->SetVec3f("lightPos", camera.Position);
+        colorShader->SetVec3f("viewPos", camera.Position);
+        colorShader->SetVec3f("lightPos", lightPos);
         colorShader->SetVec3f("objectColor", objectColor);
-        colorShader->SetVec3f("lightColor",  lightColor);
+        colorShader->SetVec3f("lightColor", lightColor);
 
         // pass projection matrix to shader (note that in this case it could change every frame)
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f,
@@ -189,11 +178,20 @@ int main() {
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            model = glm::scale(model, glm::vec3(1.5f));
             colorShader->SetMat4f("model", model);
             glm::mat3 ti_model = glm::mat3(glm::transpose(glm::inverse(model)));
             colorShader->SetMat3f("ti_model", ti_model);
 
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+            glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_SHORT, 0);
+
+//            // Index buffer
+//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+//
+//            // Draw the triangles !
+//            glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_INT, (void *) 0);
+//            glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
         // render light
@@ -202,12 +200,13 @@ int main() {
         lightShader->SetMat4f("view", view);
         glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         model = glm::mat4(1.0f);
-        model = glm::translate(model, camera.Position);
-        model = glm::scale(model, glm::vec3(0.01f)); // a smaller cube
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
         lightShader->SetMat4f("model", model);
 
         glBindVertexArray(lightVao);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_SHORT, 0);
+//        glDrawArrays(GL_TRIANGLES, 0, elements.size());
 
         // polling events
         // ------
@@ -219,8 +218,9 @@ int main() {
     // ------------------------------------------------------------------
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
-//    glDeleteBuffers(1, &ebo);
+    glDeleteBuffers(1, &ebo);
     delete colorShader;
+    delete lightShader;
 
     Events::Terminate();
     Window::Terminate();

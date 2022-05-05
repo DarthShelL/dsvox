@@ -28,7 +28,7 @@ add_executable(${PROJECT_NAME}
         sources/graphics/Texture.cpp
         sources/graphics/Texture.h
         sources/graphics/Camera.cpp
-        sources/graphics/Camera.h)
+        sources/graphics/Camera.h sources/loaders/OBJLoader.cpp sources/loaders/OBJLoader.h)
 
 add_subdirectory(libpng-1.6.37)
 target_link_libraries(${PROJECT_NAME} png_static)
@@ -58,6 +58,17 @@ foreach(RES IN LISTS RESOURCE_FILES)
 endforeach()
 # Get list of texture files
 set(SUB_DIR "resources/textures")
+FILE(GLOB_RECURSE RESOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${SUB_DIR}/*")
+foreach(RES IN LISTS RESOURCE_FILES)
+    get_filename_component(F_NAME ${RES} NAME)
+    add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "${RES}" "${CMAKE_BINARY_DIR}/${SUB_DIR}/${F_NAME}"
+            COMMENT "Copying ${F_NAME} to build directory"
+    )
+endforeach()
+# Get list of model files
+set(SUB_DIR "resources/models")
 FILE(GLOB_RECURSE RESOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${SUB_DIR}/*")
 foreach(RES IN LISTS RESOURCE_FILES)
     get_filename_component(F_NAME ${RES} NAME)

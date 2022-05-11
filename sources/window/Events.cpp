@@ -9,6 +9,10 @@
 #include <cstring>
 #endif
 
+#ifdef __linux__
+#include <cstring>
+#endif
+
 bool *Events::_keys;
 uint *Events::_frames;
 uint Events::_current = 0;

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_CXX_STANDARD 11)
 set(PROJECT_NAME dsvox)
@@ -41,6 +41,9 @@ target_link_libraries(${PROJECT_NAME} glad)
 
 add_subdirectory(glfw-3.3.6)
 target_link_libraries(${PROJECT_NAME} glfw)
+
+add_subdirectory(assimp)
+target_link_libraries(${PROJECT_NAME} assimp)
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} OpenGL::GL)

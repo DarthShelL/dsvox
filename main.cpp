@@ -16,7 +16,7 @@
 #define DEBUG 1
 
 #ifdef DEBUG
-#define LOG(x) std::cout << "LOG: ----- \n" << x << std::endl
+#define LOG(x) std::cout << "LOG: " << x << std::endl
 #else
 #define LOG(x)
 #endif

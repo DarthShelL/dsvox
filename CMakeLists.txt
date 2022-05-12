@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
+set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_STANDARD 11)
 set(PROJECT_NAME dsvox)
 
@@ -12,6 +13,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 include_directories(glad/include)
 include_directories(sources)
 include_directories(libpng-1.6.37)
+include_directories(stb)
 
 add_executable(${PROJECT_NAME}
         main.cpp
@@ -23,8 +25,6 @@ add_executable(${PROJECT_NAME}
         sources/graphics/Mesh.h
         sources/graphics/Shader.cpp
         sources/graphics/Shader.h
-        sources/loaders/TextureLoader.cpp
-        sources/loaders/TextureLoader.h
         sources/graphics/Texture.cpp
         sources/graphics/Texture.h
         sources/graphics/Camera.cpp

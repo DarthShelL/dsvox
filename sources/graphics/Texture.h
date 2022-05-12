@@ -5,11 +5,12 @@
 #ifndef GRAPHICS_TEXTURE_H
 #define GRAPHICS_TEXTURE_H
 
-
-#include "Texture.h"
+#include <string>
+#include <iostream>
+#include <regex>
+#include <png.h>
 #include <glad/glad.h>
 
-#include <string>
 
 class Texture {
 public:

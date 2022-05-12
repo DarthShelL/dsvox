@@ -7,8 +7,6 @@
 
 #include <string>
 #include <iostream>
-#include <regex>
-#include <png.h>
 #include <glad/glad.h>
 
 

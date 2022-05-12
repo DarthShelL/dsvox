@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_BUILD_TYPE Release)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 set(CMAKE_CXX_STANDARD 11)
 set(PROJECT_NAME dsvox)
 
@@ -12,7 +12,6 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 include_directories(glad/include)
 include_directories(sources)
-include_directories(libpng-1.6.37)
 include_directories(stb)
 
 add_executable(${PROJECT_NAME}
@@ -29,9 +28,6 @@ add_executable(${PROJECT_NAME}
         sources/graphics/Texture.h
         sources/graphics/Camera.cpp
         sources/graphics/Camera.h sources/loaders/OBJLoader.cpp sources/loaders/OBJLoader.h)
-
-add_subdirectory(libpng-1.6.37)
-target_link_libraries(${PROJECT_NAME} png_static)
 
 add_subdirectory(glm)
 target_link_libraries(${PROJECT_NAME} glm)
